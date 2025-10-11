@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { generateSlug } from '@/ai/flows/automatic-slug-generation';
 import { initializeFirebase } from '@/firebase';
-import { saveBlogPost, deleteBlogPost as dbDeleteBlogPost } from '@/lib/data';
+import { saveBlogPost, deleteBlogPost as dbDeleteBlogPost, getBlogPostById } from '@/lib/data';
 
 const blogPostSchema = z.object({
   id: z.string().optional(),
@@ -47,6 +47,7 @@ export async function createOrUpdateBlogPost(formData: FormData) {
     const postData = { ...parsed.data, slug: slug!, image_url: parsed.data.image_url || 'https://picsum.photos/seed/placeholder/800/600' };
     await saveBlogPost(db, postData);
     revalidatePath('/admin/blog');
+    revalidatePath(`/blog/${slug}`);
     return { success: true };
   } catch (e) {
     return { success: false, errors: { _server: ['Failed to save blog post.'] } };
@@ -62,4 +63,23 @@ export async function deleteBlogPost(id: string) {
   } catch (e) {
     return { success: false, message: 'Failed to delete blog post.' };
   }
+}
+
+export async function toggleBlogPostStatus(id: string, currentStatus: boolean) {
+    const { db } = await initializeFirebase();
+    try {
+        const post = await getBlogPostById(db, id);
+        if (!post) {
+            return { success: false, message: 'Blog post not found.' };
+        }
+        await saveBlogPost(db, { id, is_published: !currentStatus });
+        revalidatePath('/admin/blog');
+        revalidatePath(`/admin/blog/${id}/edit`);
+        if (post.slug) {
+          revalidatePath(`/blog/${post.slug}`);
+        }
+        return { success: true, newStatus: !currentStatus };
+    } catch (e) {
+        return { success: false, message: 'Failed to update blog post status.' };
+    }
 }
