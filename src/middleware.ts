@@ -1,3 +1,4 @@
+
 import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
@@ -24,17 +25,17 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
+  // const { data: { session } } = await supabase.auth.getSession();
 
   const { pathname } = request.nextUrl;
 
-  if (!session && pathname.startsWith('/admin') && pathname !== '/admin/login') {
-    return NextResponse.redirect(new URL('/admin/login', request.url));
-  }
+  // if (!session && pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  //   return NextResponse.redirect(new URL('/admin/login', request.url));
+  // }
 
-  if (session && pathname === '/admin/login') {
-    return NextResponse.redirect(new URL('/admin', request.url));
-  }
+  // if (session && pathname === '/admin/login') {
+  //   return NextResponse.redirect(new URL('/admin', request.url));
+  // }
   
   return response;
 }
