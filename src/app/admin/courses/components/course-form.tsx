@@ -86,6 +86,7 @@ export function CourseForm({ initialData }: CourseFormProps) {
           message: (messages as string[]).join(', '),
         });
       });
+      console.log(result)
       toast({ title: 'Please correct the errors below.', variant: 'destructive' });
     }
   };

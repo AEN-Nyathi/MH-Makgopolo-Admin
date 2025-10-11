@@ -19,7 +19,6 @@ const courseSchema = z.object({
 });
 
 export async function createOrUpdateCourse(formData: FormData) {
-  console.log('[Courses Action] Received form data:', formData);
   const { db } = await initializeFirebase();
   const data = Object.fromEntries(formData.entries());
   
@@ -34,15 +33,11 @@ export async function createOrUpdateCourse(formData: FormData) {
     return { success: false, errors: parsed.error.flatten().fieldErrors };
   }
 
-  console.log('[Courses Action] Parsed data:', parsed.data);
-
   let slug = parsed.data.slug;
   if (!slug && parsed.data.title) {
     try {
-      console.log('[Courses Action] Generating slug for title:', parsed.data.title);
       const result = await generateSlug({ title: parsed.data.title });
       slug = result.slug;
-      console.log('[Courses Action] Slug generated successfully:', slug);
     } catch (error) {
       console.error('[Courses Action] AI slug generation failed:', error);
       slug = parsed.data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
@@ -57,13 +52,12 @@ export async function createOrUpdateCourse(formData: FormData) {
             created_at: new Date().toISOString()
         }
     }
-    console.log('[Courses Action] Attempting to save course data:', courseData);
+    
     await saveCourse(db, courseData);
-    console.log('[Courses Action] Course saved successfully.');
     revalidatePath('/admin/courses');
     return { success: true };
-  } catch (e) {
-    console.error('[Courses Action] Failed to save course:', e);
+  } catch (e: any) {
+    console.error('[Courses Action] Failed to save course:', e.message);
     return { success: false, errors: { _server: ['Failed to save course.'] } };
   }
 }
