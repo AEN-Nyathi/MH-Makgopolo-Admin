@@ -29,6 +29,7 @@ export async function createOrUpdateCourse(formData: FormData) {
   });
 
   if (!parsed.success) {
+    console.error("Validation failed:", parsed.error.flatten().fieldErrors);
     return { success: false, errors: parsed.error.flatten().fieldErrors };
   }
 
@@ -45,17 +46,18 @@ export async function createOrUpdateCourse(formData: FormData) {
 
   try {
     let courseData: any = { ...parsed.data, slug: slug! };
-    // Add created_at timestamp if it's a new course
     if (!parsed.data.id) {
         courseData = {
             ...courseData,
             created_at: new Date().toISOString()
         }
     }
+    console.log("Attempting to save course data:", courseData);
     await saveCourse(db, courseData);
     revalidatePath('/admin/courses');
     return { success: true };
   } catch (e) {
+    console.error("Failed to save course:", e);
     return { success: false, errors: { _server: ['Failed to save course.'] } };
   }
 }
