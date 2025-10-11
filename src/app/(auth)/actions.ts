@@ -1,9 +1,9 @@
 'use server';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { getAuth } from 'firebase/auth/web-extension';
 import { initializeFirebase } from '@/firebase';
 import { cookies } from 'next/headers';
+import { AuthError } from 'firebase/auth';
 
 export async function login(data: any) {
   try {
@@ -20,7 +20,9 @@ export async function login(data: any) {
 
     return { success: true };
   } catch (error: any) {
-    return { success: false, error: error.message };
+    // It's better to return a generic error message on the server
+    // to avoid leaking implementation details.
+    return { success: false, error: 'Invalid email or password.' };
   }
 }
 
