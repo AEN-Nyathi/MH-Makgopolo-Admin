@@ -50,14 +50,15 @@ export default function LoginPage() {
         description: error.message,
         variant: 'destructive',
       });
+      setLoading(false);
     } else {
       toast({
         title: 'Login Successful',
         description: 'Redirecting to dashboard...',
       });
-      router.push('/admin');
+      // Use window.location.href for a full page refresh to ensure middleware picks up the new session
+      window.location.href = '/admin';
     }
-    setLoading(false);
   }
 
   return (
