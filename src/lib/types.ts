@@ -9,6 +9,11 @@ export type Course = {
   price: number;
   is_active: boolean;
   created_at: string;
+  image_url?: string;
+  requirements?: string;
+  certification?: string;
+  job_prospects?: string;
+  is_featured?: boolean;
 };
 
 export type BlogPost = {
@@ -32,6 +37,8 @@ export type Testimonial = {
   text: string;
   is_approved: boolean;
   submission_date: string;
+  rating?: number;
+  is_featured?: boolean;
 };
 
 export type RegistrationStatus = 'New' | 'Contacted' | 'Enrolled';
@@ -56,4 +63,16 @@ export type ContactSubmission = {
   message: string;
   submission_date: string;
   status: ContactStatus;
+};
+
+export type GalleryCategory = 'training' | 'graduates' | 'facilities' | 'events';
+
+export type GalleryImage = {
+  id: string;
+  title: string;
+  image_url: string;
+  category: GalleryCategory;
+  description?: string;
+  is_active: boolean;
+  created_at: string;
 };

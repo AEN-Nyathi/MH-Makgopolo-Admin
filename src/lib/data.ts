@@ -17,6 +17,7 @@ import type {
   ContactSubmission,
   RegistrationStatus,
   ContactStatus,
+  GalleryImage,
 } from '@/lib/types';
 
 const getCollection = async <T>(db: Firestore, collectionName: string): Promise<T[]> => {
@@ -118,3 +119,21 @@ export const getContactSubmissions = (db: Firestore) => getCollection<ContactSub
 export const updateContactStatus = (db: Firestore, id: string, status: ContactStatus) => {
   return updateDoc(doc(db, 'contact_submissions', id), { status });
 };
+
+// Gallery Images
+export const getGalleryImages = (db: Firestore) => getCollection<GalleryImage>(db, 'gallery_images');
+export const getGalleryImageById = (db: Firestore, id: string) => getDocumentById<GalleryImage>(db, 'gallery_images', id);
+
+export const saveGalleryImage = async (db: Firestore, image: Partial<Omit<GalleryImage, 'created_at'>>) => {
+  const { id, ...updateData } = image;
+  if (id) {
+    await updateDoc(doc(db, 'gallery_images', id), updateData);
+    return { id, ...updateData };
+  } else {
+    const newImage = { ...updateData, created_at: new Date().toISOString() };
+    const docRef = await addDoc(collection(db, 'gallery_images'), newImage);
+    return { id: docRef.id, ...newImage };
+  }
+};
+
+export const deleteGalleryImage = (db: Firestore, id: string) => deleteDoc(doc(db, 'gallery_images', id));

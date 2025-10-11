@@ -16,6 +16,7 @@ const courseSchema = z.object({
   duration: z.string().min(1, 'Duration is required.'),
   price: z.coerce.number().min(0, 'Price must be a positive number.'),
   is_active: z.boolean(),
+  image_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 });
 
 export async function createOrUpdateCourse(formData: FormData) {
@@ -45,8 +46,6 @@ export async function createOrUpdateCourse(formData: FormData) {
 
   try {
     let courseData: any = { ...parsed.data, slug: slug! };
-    // This logic was flawed, new courses don't have an ID yet.
-    // The created_at field is now handled correctly inside saveCourse.
     
     await saveCourse(db, courseData);
     revalidatePath('/admin/courses');

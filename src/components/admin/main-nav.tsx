@@ -10,6 +10,7 @@ import {
   UserCheck,
   MailCheck,
   ShieldCheck,
+  GalleryHorizontal,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ const navItems = [
   { href: '/admin/courses', label: 'Courses', icon: BookCopy },
   { href: '/admin/blog', label: 'Blog Posts', icon: Newspaper },
   { href: '/admin/testimonials', label: 'Testimonials', icon: Star },
+  { href: '/admin/gallery', label: 'Gallery', icon: GalleryHorizontal },
   { href: '/admin/registrations', label: 'Registrations', icon: UserCheck },
   { href: '/admin/contact-leads', label: 'Contact Leads', icon: MailCheck },
 ];
@@ -38,7 +40,7 @@ export function MainNav({ className }: React.HTMLAttributes<HTMLElement>) {
           <SidebarMenuItem key={item.href}>
             <Link href={item.href}>
               <SidebarMenuButton
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href) && (item.href !== '/admin' || pathname === '/admin')}
                 tooltip={{ children: item.label }}
               >
                 <item.icon />

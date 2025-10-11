@@ -32,6 +32,7 @@ const formSchema = z.object({
   duration: z.string().min(1, 'Duration is required.'),
   price: z.coerce.number().min(0, 'Price must be a positive number.'),
   is_active: z.boolean(),
+  image_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 });
 
 type CourseFormValues = z.infer<typeof formSchema>;
@@ -58,6 +59,7 @@ export function CourseForm({ initialData }: CourseFormProps) {
       duration: '',
       price: 0,
       is_active: true,
+      image_url: '',
     },
   });
   
@@ -218,6 +220,19 @@ export function CourseForm({ initialData }: CourseFormProps) {
                       <FormLabel>Price (ZAR)</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="e.g., 1500" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="image_url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Image URL</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://example.com/image.jpg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
