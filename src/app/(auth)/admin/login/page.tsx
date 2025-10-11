@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { ShieldCheck } from 'lucide-react';
-import { useFirebaseApp } from '@/firebase';
+import { login } from '@/app/(auth)/actions';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -31,7 +30,6 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const app = useFirebaseApp();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,23 +41,24 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const auth = getAuth(app);
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+    
+    const result = await login(values);
+
+    if (result.success) {
       toast({
         title: 'Login Successful',
         description: 'Redirecting to dashboard...',
       });
       router.push('/admin');
-    } catch (error: any) {
+      router.refresh(); // Ensure the layout re-renders with the new auth state
+    } else {
       toast({
         title: 'Login Failed',
-        description: error.message,
+        description: result.error,
         variant: 'destructive',
       });
-    } finally {
-        setLoading(false);
     }
+    setLoading(false);
   }
 
   return (
