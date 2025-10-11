@@ -3,14 +3,27 @@ import type { Course, BlogPost, Testimonial, CourseRegistration, ContactSubmissi
 import { subDays, formatISO } from 'date-fns';
 
 const getCollection = async <T>(collectionName: string): Promise<T[]> => {
-    const snapshot = await db.collection(collectionName).get();
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+    try {
+        const snapshot = await db.collection(collectionName).get();
+        if (snapshot.empty) {
+            return [];
+        }
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+    } catch (error) {
+        console.error(`Error fetching ${collectionName}:`, error);
+        return [];
+    }
 }
 
 const getDocumentById = async <T>(collectionName: string, id: string): Promise<T | null> => {
-    const doc = await db.collection(collectionName).doc(id).get();
-    if (!doc.exists) return null;
-    return { id: doc.id, ...doc.data() } as T;
+    try {
+        const doc = await db.collection(collectionName).doc(id).get();
+        if (!doc.exists) return null;
+        return { id: doc.id, ...doc.data() } as T;
+    } catch (error) {
+        console.error(`Error fetching document ${id} from ${collectionName}:`, error);
+        return null;
+    }
 }
 
 // --- Firestore data access ---
