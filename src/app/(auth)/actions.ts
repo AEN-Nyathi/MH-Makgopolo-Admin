@@ -20,9 +20,8 @@ export async function login(data: any) {
 
     return { success: true };
   } catch (error: any) {
-    // It's better to return a generic error message on the server
-    // to avoid leaking implementation details.
-    return { success: false, error: 'Invalid email or password.' };
+    // Return the specific Firebase error message
+    return { success: false, error: error.message || 'An unknown error occurred.' };
   }
 }
 
