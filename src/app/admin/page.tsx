@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -25,12 +28,39 @@ import { formatDate } from '@/lib/utils';
 import { StatusBadge } from '@/components/admin/status-badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useFirestore } from '@/firebase';
+import type { Course, CourseRegistration, ContactSubmission, Testimonial } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default async function DashboardPage() {
-  const courses = await getCourses();
-  const registrations = await getCourseRegistrations();
-  const contacts = await getContactSubmissions();
-  const testimonials = await getTestimonials();
+export default function DashboardPage() {
+  const db = useFirestore();
+  const [loading, setLoading] = useState(true);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [registrations, setRegistrations] = useState<CourseRegistration[]>([]);
+  const [contacts, setContacts] = useState<ContactSubmission[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  
+  useEffect(() => {
+    if (!db) return;
+    
+    const fetchData = async () => {
+      setLoading(true);
+      const [coursesData, registrationsData, contactsData, testimonialsData] = await Promise.all([
+        getCourses(db),
+        getCourseRegistrations(db),
+        getContactSubmissions(db),
+        getTestimonials(db)
+      ]);
+      setCourses(coursesData);
+      setRegistrations(registrationsData);
+      setContacts(contactsData);
+      setTestimonials(testimonialsData);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [db]);
+
 
   const totalRegistrations = registrations.length;
   const totalContacts = contacts.length;
@@ -39,6 +69,33 @@ export default async function DashboardPage() {
 
   const recentRegistrations = registrations.slice(0, 5);
   const recentTestimonials = testimonials.filter(t => !t.is_approved).slice(0, 5);
+
+  if (loading) {
+    return (
+        <>
+        <PageHeader
+            title="Dashboard"
+            description="A high-level summary of key operational metrics."
+        />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card><CardHeader><Skeleton className="h-4 w-2/3" /></CardHeader><CardContent><Skeleton className="h-8 w-1/3" /></CardContent></Card>
+            <Card><CardHeader><Skeleton className="h-4 w-2/3" /></CardHeader><CardContent><Skeleton className="h-8 w-1/3" /></CardContent></Card>
+            <Card><CardHeader><Skeleton className="h-4 w-2/3" /></CardHeader><CardContent><Skeleton className="h-8 w-1/3" /></CardContent></Card>
+            <Card><CardHeader><Skeleton className="h-4 w-2/3" /></CardHeader><CardContent><Skeleton className="h-8 w-1/3" /></CardContent></Card>
+        </div>
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+            <Card>
+                <CardHeader><CardTitle>Recent Course Registrations</CardTitle></CardHeader>
+                <CardContent><Skeleton className="h-32 w-full" /></CardContent>
+            </Card>
+            <Card>
+                <CardHeader><CardTitle>Testimonials Awaiting Review</CardTitle></CardHeader>
+                <CardContent><Skeleton className="h-32 w-full" /></CardContent>
+            </Card>
+        </div>
+        </>
+    );
+  }
 
   return (
     <>

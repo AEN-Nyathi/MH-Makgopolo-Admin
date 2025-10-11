@@ -2,9 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { saveBlogPost, deleteBlogPost as dbDeleteBlogPost } from '@/lib/data';
 import { generateSlug } from '@/ai/flows/automatic-slug-generation';
-import type { BlogPost } from '@/lib/types';
+import { initializeFirebase } from '@/firebase';
+import { saveBlogPost, deleteBlogPost as dbDeleteBlogPost } from '@/lib/data';
 
 const blogPostSchema = z.object({
   id: z.string().optional(),
@@ -20,6 +20,7 @@ const blogPostSchema = z.object({
 });
 
 export async function createOrUpdateBlogPost(formData: FormData) {
+  const { db } = await initializeFirebase();
   const data = Object.fromEntries(formData.entries());
   
   const parsed = blogPostSchema.safeParse({
@@ -43,8 +44,8 @@ export async function createOrUpdateBlogPost(formData: FormData) {
   }
 
   try {
-    const postData: Omit<BlogPost, 'created_at'> = { ...parsed.data, slug: slug!, image_url: parsed.data.image_url || 'https://picsum.photos/seed/placeholder/800/600' };
-    await saveBlogPost(postData);
+    const postData = { ...parsed.data, slug: slug!, image_url: parsed.data.image_url || 'https://picsum.photos/seed/placeholder/800/600' };
+    await saveBlogPost(db, postData);
     revalidatePath('/admin/blog');
     return { success: true };
   } catch (e) {
@@ -52,19 +53,10 @@ export async function createOrUpdateBlogPost(formData: FormData) {
   }
 }
 
-export async function toggleBlogPostStatus(id: string, currentStatus: boolean) {
-  try {
-    await saveBlogPost({ id, is_published: !currentStatus } as any);
-    revalidatePath('/admin/blog');
-    return { success: true, newStatus: !currentStatus };
-  } catch (e) {
-    return { success: false, message: 'Failed to update status.' };
-  }
-}
-
 export async function deleteBlogPost(id: string) {
+    const { db } = await initializeFirebase();
   try {
-    await dbDeleteBlogPost(id);
+    await dbDeleteBlogPost(db, id);
     revalidatePath('/admin/blog');
     return { success: true };
   } catch (e) {

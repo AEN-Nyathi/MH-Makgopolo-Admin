@@ -7,7 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { Course } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
-import { toggleCourseStatus, deleteCourse } from '@/app/admin/courses/actions';
+import { deleteCourse } from '@/app/admin/courses/actions';
+import { useFirestore } from '@/firebase';
 
 import {
   Table,
@@ -25,7 +26,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import {
   AlertDialog,
@@ -37,30 +37,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-
-interface StatusSwitchProps {
-  courseId: string;
-  initialIsActive: boolean;
-}
-
-function StatusSwitch({ courseId, initialIsActive }: StatusSwitchProps) {
-  const [isActive, setIsActive] = useState(initialIsActive);
-  const { toast } = useToast();
-
-  const handleToggle = async () => {
-    const newStatus = !isActive;
-    setIsActive(newStatus); // Optimistic update
-    const result = await toggleCourseStatus(courseId, !newStatus);
-    if (!result.success) {
-      setIsActive(!newStatus); // Revert on failure
-      toast({ title: 'Error', description: result.message, variant: 'destructive' });
-    } else {
-      toast({ title: 'Success', description: `Course status updated.` });
-    }
-  };
-
-  return <Switch checked={isActive} onCheckedChange={handleToggle} />;
-}
+import { StatusBadge } from '@/components/admin/status-badge';
 
 interface CoursesTableProps {
   courses: Course[];
@@ -102,7 +79,7 @@ export function CoursesTable({ courses }: CoursesTableProps) {
               <TableHead>Duration</TableHead>
               <TableHead className="text-right">Price (ZAR)</TableHead>
               <TableHead>Created</TableHead>
-              <TableHead>Active</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
@@ -122,7 +99,7 @@ export function CoursesTable({ courses }: CoursesTableProps) {
                   </TableCell>
                   <TableCell>{formatDate(course.created_at)}</TableCell>
                   <TableCell>
-                    <StatusSwitch courseId={course.id} initialIsActive={course.is_active} />
+                    <StatusBadge status={course.is_active ? 'Active' : 'Inactive'} />
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>

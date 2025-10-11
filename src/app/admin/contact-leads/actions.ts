@@ -3,10 +3,12 @@
 import { revalidatePath } from 'next/cache';
 import { updateContactStatus as dbUpdateContactStatus } from '@/lib/data';
 import type { ContactStatus } from '@/lib/types';
+import { initializeFirebase } from '@/firebase';
 
 export async function updateContactStatus(id: string, status: ContactStatus) {
+  const { db } = await initializeFirebase();
   try {
-    await dbUpdateContactStatus(id, status);
+    await dbUpdateContactStatus(db, id, status);
     revalidatePath('/admin/contact-leads');
     return { success: true };
   } catch (e) {

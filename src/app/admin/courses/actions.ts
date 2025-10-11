@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { saveCourse, deleteCourse as dbDeleteCourse } from '@/lib/data';
 import { generateSlug } from '@/ai/flows/automatic-slug-generation';
-import type { Course } from '@/lib/types';
+import { initializeFirebase } from '@/firebase';
 
 const courseSchema = z.object({
   id: z.string().optional(),
@@ -19,6 +19,7 @@ const courseSchema = z.object({
 });
 
 export async function createOrUpdateCourse(formData: FormData) {
+  const { db } = await initializeFirebase();
   const data = Object.fromEntries(formData.entries());
   
   const parsed = courseSchema.safeParse({
@@ -43,8 +44,8 @@ export async function createOrUpdateCourse(formData: FormData) {
   }
 
   try {
-    const courseData: Omit<Course, 'created_at'> = { ...parsed.data, slug: slug! };
-    await saveCourse(courseData);
+    const courseData = { ...parsed.data, slug: slug! };
+    await saveCourse(db, courseData);
     revalidatePath('/admin/courses');
     return { success: true };
   } catch (e) {
@@ -52,19 +53,10 @@ export async function createOrUpdateCourse(formData: FormData) {
   }
 }
 
-export async function toggleCourseStatus(id: string, currentStatus: boolean) {
-  try {
-    await saveCourse({ id, is_active: !currentStatus } as any);
-    revalidatePath('/admin/courses');
-    return { success: true, newStatus: !currentStatus };
-  } catch (e) {
-    return { success: false, message: 'Failed to update status.' };
-  }
-}
-
 export async function deleteCourse(id: string) {
+  const { db } = await initializeFirebase();
   try {
-    await dbDeleteCourse(id);
+    await dbDeleteCourse(db, id);
     revalidatePath('/admin/courses');
     return { success: true };
   } catch (e) {
