@@ -57,8 +57,8 @@ export async function createOrUpdateCourse(formData: FormData) {
     revalidatePath('/admin/courses');
     return { success: true };
   } catch (e: any) {
-    console.error('[Courses Action] Failed to save course:', e.message);
-    return { success: false, errors: { _server: ['Failed to save course.'] } };
+    console.error('[Courses Action] Failed to save course:', e);
+    return { success: false, errors: { _server: [e.message || 'Failed to save course.'] } };
   }
 }
 
