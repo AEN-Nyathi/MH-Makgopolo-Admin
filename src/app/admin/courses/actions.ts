@@ -29,7 +29,6 @@ export async function createOrUpdateCourse(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Validation failed:", parsed.error.flatten().fieldErrors);
     return { success: false, errors: parsed.error.flatten().fieldErrors };
   }
 
@@ -39,7 +38,6 @@ export async function createOrUpdateCourse(formData: FormData) {
       const result = await generateSlug({ title: parsed.data.title });
       slug = result.slug;
     } catch (error) {
-      console.error('AI Slug generation failed:', error);
       slug = parsed.data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
     }
   }
@@ -52,12 +50,10 @@ export async function createOrUpdateCourse(formData: FormData) {
             created_at: new Date().toISOString()
         }
     }
-    console.log("Attempting to save course data:", courseData);
     await saveCourse(db, courseData);
     revalidatePath('/admin/courses');
     return { success: true };
   } catch (e) {
-    console.error("Failed to save course:", e);
     return { success: false, errors: { _server: ['Failed to save course.'] } };
   }
 }
