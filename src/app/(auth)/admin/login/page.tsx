@@ -56,7 +56,6 @@ export default function LoginPage() {
         description: 'Redirecting to dashboard...',
       });
       router.push('/admin');
-      router.refresh();
     }
     setLoading(false);
   }
