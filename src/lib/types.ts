@@ -1,0 +1,59 @@
+export type Course = {
+  id: string;
+  title: string;
+  slug: string;
+  short_description: string;
+  full_description: string;
+  grade_level: string;
+  duration: string;
+  price: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type BlogPost = {
+  id: string;
+  title: string;
+  slug: string;
+  author: string;
+  category: string;
+  excerpt: string;
+  content: string;
+  image_url: string;
+  published_at: string;
+  is_published: boolean;
+  created_at: string;
+};
+
+export type Testimonial = {
+  id: string;
+  client_name: string;
+  client_role: string;
+  text: string;
+  is_approved: boolean;
+  submission_date: string;
+};
+
+export type RegistrationStatus = 'New' | 'Contacted' | 'Enrolled';
+
+export type CourseRegistration = {
+  id: string;
+  full_name: string;
+  phone: string;
+  email: string;
+  course_interest: string;
+  submission_date: string;
+  status: RegistrationStatus;
+};
+
+export type ContactStatus = 'New' | 'Followed Up' | 'Archived';
+
+export type ContactSubmission = {
+  id: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  message: string;
+  submission_date: string;
+  status: ContactStatus;
+};
