@@ -8,12 +8,12 @@ export type Course = {
   duration: string;
   price: number;
   is_active: boolean;
+  is_featured: boolean;
   created_at: string;
   image_url?: string;
   requirements?: string;
   certification?: string;
   job_prospects?: string;
-  is_featured?: boolean;
 };
 
 export type BlogPost = {
@@ -32,9 +32,9 @@ export type BlogPost = {
 
 export type Testimonial = {
   id: string;
-  client_name: string;
-  client_role: string;
-  text: string;
+  student_name: string;
+  current_position: string;
+  testimonial_text: string;
   is_approved: boolean;
   submission_date: string;
   rating?: number;

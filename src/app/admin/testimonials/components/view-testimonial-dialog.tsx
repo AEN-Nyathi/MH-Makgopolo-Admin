@@ -48,11 +48,11 @@ export function ViewTestimonialDialog({ testimonial, isOpen, onOpenChange }: Vie
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>Testimonial from {testimonial.client_name}</DialogTitle>
-          <DialogDescription>{testimonial.client_role}</DialogDescription>
+          <DialogTitle>Testimonial from {testimonial.student_name}</DialogTitle>
+          <DialogDescription>{testimonial.current_position}</DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          <p className="text-sm text-foreground leading-relaxed italic">"{testimonial.text}"</p>
+          <p className="text-sm text-foreground leading-relaxed italic">"{testimonial.testimonial_text}"</p>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>Close</Button>

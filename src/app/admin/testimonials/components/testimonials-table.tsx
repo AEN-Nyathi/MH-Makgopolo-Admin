@@ -63,8 +63,8 @@ export function TestimonialsTable({ testimonials }: TestimonialsTableProps) {
           {testimonials.length > 0 ? (
             testimonials.map((testimonial) => (
               <TableRow key={testimonial.id}>
-                <TableCell className="font-medium">{testimonial.client_name}</TableCell>
-                <TableCell>{testimonial.client_role}</TableCell>
+                <TableCell className="font-medium">{testimonial.student_name}</TableCell>
+                <TableCell>{testimonial.current_position}</TableCell>
                 <TableCell>{formatDate(testimonial.submission_date)}</TableCell>
                 <TableCell>
                   <StatusBadge status={testimonial.is_approved ? 'Approved' : 'Pending'} />

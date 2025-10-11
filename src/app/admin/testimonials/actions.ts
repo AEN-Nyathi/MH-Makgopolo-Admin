@@ -7,9 +7,9 @@ import { initializeFirebase } from '@/firebase';
 
 const testimonialSchema = z.object({
   id: z.string().optional(),
-  client_name: z.string().min(2, 'Client name is too short'),
-  client_role: z.string().min(2, 'Client role is too short'),
-  text: z.string().min(10, 'Testimonial text is too short'),
+  student_name: z.string().min(2, 'Client name is too short'),
+  current_position: z.string().min(2, 'Client role is too short'),
+  testimonial_text: z.string().min(10, 'Testimonial text is too short'),
   is_approved: z.boolean(),
   is_featured: z.boolean(),
   rating: z.coerce.number().min(1).max(5).optional(),

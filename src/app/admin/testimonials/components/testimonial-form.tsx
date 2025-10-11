@@ -17,9 +17,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 
 const formSchema = z.object({
-  client_name: z.string().min(2, 'Client name is required'),
-  client_role: z.string().min(2, 'Client role is required'),
-  text: z.string().min(10, 'Testimonial text is too short'),
+  student_name: z.string().min(2, 'Client name is required'),
+  current_position: z.string().min(2, 'Client role is required'),
+  testimonial_text: z.string().min(10, 'Testimonial text is too short'),
   is_approved: z.boolean(),
   is_featured: z.boolean(),
   rating: z.number().min(1).max(5).optional(),
@@ -38,9 +38,9 @@ export function TestimonialForm({ initialData }: TestimonialFormProps) {
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? { ...initialData, rating: initialData.rating || 5 } : {
-      client_name: '',
-      client_role: '',
-      text: '',
+      student_name: '',
+      current_position: '',
+      testimonial_text: '',
       is_approved: false,
       is_featured: false,
       rating: 5,
@@ -80,13 +80,13 @@ export function TestimonialForm({ initialData }: TestimonialFormProps) {
         <Card>
             <CardHeader><CardTitle>{initialData ? 'Edit Testimonial' : 'New Testimonial'}</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-                <FormField control={form.control} name="client_name" render={({ field }) => (
+                <FormField control={form.control} name="student_name" render={({ field }) => (
                     <FormItem><FormLabel>Client Name</FormLabel><FormControl><Input placeholder="e.g., Jane Smith" {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control} name="client_role" render={({ field }) => (
+                <FormField control={form.control} name="current_position" render={({ field }) => (
                     <FormItem><FormLabel>Client Role / Company</FormLabel><FormControl><Input placeholder="e.g., CEO at Acme Inc." {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control} name="text" render={({ field }) => (
+                <FormField control={form.control} name="testimonial_text" render={({ field }) => (
                     <FormItem><FormLabel>Testimonial Text</FormLabel><FormControl><Textarea rows={6} placeholder="Full testimonial content." {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="rating" render={({ field }) => (
