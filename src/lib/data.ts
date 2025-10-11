@@ -1,145 +1,85 @@
-import { createClient } from '@/lib/supabase/server';
+import { db } from '@/firebase/server';
 import type { Course, BlogPost, Testimonial, CourseRegistration, ContactSubmission, RegistrationStatus, ContactStatus } from '@/lib/types';
 import { subDays, formatISO } from 'date-fns';
 
-// --- Supabase data access ---
+const getCollection = async <T>(collectionName: string): Promise<T[]> => {
+    const snapshot = await db.collection(collectionName).get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+}
+
+const getDocumentById = async <T>(collectionName: string, id: string): Promise<T | null> => {
+    const doc = await db.collection(collectionName).doc(id).get();
+    if (!doc.exists) return null;
+    return { id: doc.id, ...doc.data() } as T;
+}
+
+// --- Firestore data access ---
 
 // Courses
-export const getCourses = async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('courses').select('*').order('created_at', { ascending: false });
-    if (error) {
-        console.error('Error fetching courses:', error);
-        return [];
-    }
-    return data;
-};
-
-export const getCourseById = async (id: string) => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('courses').select('*').eq('id', id).single();
-    if (error) {
-        console.error(`Error fetching course ${id}:`, error);
-        return null;
-    }
-    return data;
-};
+export const getCourses = async () => getCollection<Course>('courses');
+export const getCourseById = async (id: string) => getDocumentById<Course>('courses', id);
 
 export const saveCourse = async (course: Partial<Omit<Course, 'created_at'>>) => {
-    const supabase = createClient();
     const { id, ...updateData } = course;
-
     if (id) {
-        const { data, error } = await supabase.from('courses').update(updateData).eq('id', id).select().single();
-        if (error) throw error;
-        return data;
+        await db.collection('courses').doc(id).update(updateData);
+        return { id, ...updateData };
     } else {
-        const { data, error } = await supabase.from('courses').insert({ ...updateData, created_at: new Date().toISOString() }).select().single();
-        if (error) throw error;
-        return data;
+        const newCourse = { ...updateData, created_at: new Date().toISOString() };
+        const docRef = await db.collection('courses').add(newCourse);
+        return { id: docRef.id, ...newCourse };
     }
 };
 
 export const deleteCourse = async (id: string) => {
-    const supabase = createClient();
-    const { error } = await supabase.from('courses').delete().eq('id', id);
-    if (error) throw error;
+    await db.collection('courses').doc(id).delete();
     return { success: true };
 };
 
 // Blog Posts
-export const getBlogPosts = async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('blog_posts').select('*').order('published_at', { ascending: false });
-    if (error) {
-        console.error('Error fetching blog posts:', error);
-        return [];
-    }
-    return data;
-};
-
-export const getBlogPostById = async (id: string) => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('blog_posts').select('*').eq('id', id).single();
-    if (error) {
-        console.error(`Error fetching blog post ${id}:`, error);
-        return null;
-    }
-    return data;
-};
+export const getBlogPosts = async () => getCollection<BlogPost>('blog_posts');
+export const getBlogPostById = async (id: string) => getDocumentById<BlogPost>('blog_posts', id);
 
 export const saveBlogPost = async (post: Partial<Omit<BlogPost, 'created_at'>>) => {
-    const supabase = createClient();
     const { id, ...updateData } = post;
-
     if (id) {
-        const { data, error } = await supabase.from('blog_posts').update(updateData).eq('id', id).select().single();
-        if (error) throw error;
-        return data;
+        await db.collection('blog_posts').doc(id).update(updateData);
+        return { id, ...updateData };
     } else {
-        const { data, error } = await supabase.from('blog_posts').insert({ ...updateData, created_at: new Date().toISOString() }).select().single();
-        if (error) throw error;
-        return data;
+        const newPost = { ...updateData, created_at: new Date().toISOString() };
+        const docRef = await db.collection('blog_posts').add(newPost);
+        return { id: docRef.id, ...newPost };
     }
 };
 
 export const deleteBlogPost = async (id: string) => {
-    const supabase = createClient();
-    const { error } = await supabase.from('blog_posts').delete().eq('id', id);
-    if (error) throw error;
+    await db.collection('blog_posts').doc(id).delete();
     return { success: true };
 };
 
 // Testimonials
-export const getTestimonials = async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('testimonials').select('*').order('submission_date', { ascending: false });
-     if (error) {
-        console.error('Error fetching testimonials:', error);
-        return [];
-    }
-    return data;
-};
+export const getTestimonials = async () => getCollection<Testimonial>('testimonials');
 
 export const updateTestimonialApproval = async (id: string, is_approved: boolean) => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('testimonials').update({ is_approved }).eq('id', id).select().single();
-    if (error) throw error;
-    return data;
+    await db.collection('testimonials').doc(id).update({ is_approved });
+    const updatedTestimonial = await getDocumentById<Testimonial>('testimonials', id);
+    return updatedTestimonial;
 }
 
 // Registrations
-export const getCourseRegistrations = async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('course_registrations').select('*').order('submission_date', { ascending: false });
-    if (error) {
-        console.error('Error fetching course registrations:', error);
-        return [];
-    }
-    return data;
-};
+export const getCourseRegistrations = async () => getCollection<CourseRegistration>('course_registrations');
 
 export const updateRegistrationStatus = async (id: string, status: RegistrationStatus) => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('course_registrations').update({ status }).eq('id', id).select().single();
-    if (error) throw error;
-    return data;
+    await db.collection('course_registrations').doc(id).update({ status });
+    const updatedRegistration = await getDocumentById<CourseRegistration>('course_registrations', id);
+    return updatedRegistration;
 };
 
 // Contact Submissions
-export const getContactSubmissions = async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('contact_submissions').select('*').order('submission_date', { ascending: false });
-    if (error) {
-        console.error('Error fetching contact submissions:', error);
-        return [];
-    }
-    return data;
-};
+export const getContactSubmissions = async () => getCollection<ContactSubmission>('contact_submissions');
 
 export const updateContactStatus = async (id: string, status: ContactStatus) => {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('contact_submissions').update({ status }).eq('id', id).select().single();
-    if (error) throw error;
-    return data;
+    await db.collection('contact_submissions').doc(id).update({ status });
+    const updatedSubmission = await getDocumentById<ContactSubmission>('contact_submissions', id);
+    return updatedSubmission;
 };

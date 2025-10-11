@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { createClient } from '@/lib/supabase/client';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { ShieldCheck } from 'lucide-react';
+import { useFirebaseApp } from '@/firebase';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -30,7 +31,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
+  const app = useFirebaseApp();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,22 +43,22 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword(values);
-
-    if (error) {
+    const auth = getAuth(app);
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({
+        title: 'Login Successful',
+        description: 'Redirecting to dashboard...',
+      });
+      router.push('/admin');
+    } catch (error: any) {
       toast({
         title: 'Login Failed',
         description: error.message,
         variant: 'destructive',
       });
-      setLoading(false);
-    } else {
-      toast({
-        title: 'Login Successful',
-        description: 'Redirecting to dashboard...',
-      });
-      // Use window.location.href for a full page refresh to ensure middleware picks up the new session
-      window.location.href = '/admin';
+    } finally {
+        setLoading(false);
     }
   }
 
