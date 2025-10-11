@@ -89,6 +89,18 @@ export const deleteBlogPost = (db: Firestore, id: string) => deleteDoc(doc(db, '
 // Testimonials
 export const getTestimonials = (db: Firestore) => getCollection<Testimonial>(db, 'testimonials');
 
+export const saveTestimonial = async (db: Firestore, testimonial: Partial<Omit<Testimonial, 'submission_date'>>) => {
+    const { id, ...updateData } = testimonial;
+    if (id) {
+      await updateDoc(doc(db, 'testimonials', id), updateData);
+      return { id, ...updateData };
+    } else {
+      const newTestimonial = { ...updateData, submission_date: new Date().toISOString() };
+      const docRef = await addDoc(collection(db, 'testimonials'), newTestimonial);
+      return { id: docRef.id, ...newTestimonial };
+    }
+  };
+
 export const updateTestimonialApproval = (db: Firestore, id: string, is_approved: boolean) => {
   return updateDoc(doc(db, 'testimonials', id), { is_approved });
 };
