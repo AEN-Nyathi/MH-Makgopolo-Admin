@@ -29,7 +29,6 @@ export async function createOrUpdateCourse(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error('[Courses Action] Zod validation failed:', parsed.error.flatten().fieldErrors);
     return { success: false, errors: parsed.error.flatten().fieldErrors };
   }
 
@@ -46,12 +45,8 @@ export async function createOrUpdateCourse(formData: FormData) {
 
   try {
     let courseData: any = { ...parsed.data, slug: slug! };
-    if (!parsed.data.id) {
-        courseData = {
-            ...courseData,
-            created_at: new Date().toISOString()
-        }
-    }
+    // This logic was flawed, new courses don't have an ID yet.
+    // The created_at field is now handled correctly inside saveCourse.
     
     await saveCourse(db, courseData);
     revalidatePath('/admin/courses');
@@ -68,7 +63,7 @@ export async function deleteCourse(id: string) {
     await dbDeleteCourse(db, id);
     revalidatePath('/admin/courses');
     return { success: true };
-  } catch (e) {
-    return { success: false, message: 'Failed to delete course.' };
+  } catch (e:any) {
+    return { success: false, message: e.message || 'Failed to delete course.' };
   }
 }
