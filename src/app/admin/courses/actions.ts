@@ -16,7 +16,11 @@ const courseSchema = z.object({
   duration: z.string().min(1, 'Duration is required.'),
   price: z.coerce.number().min(0, 'Price must be a positive number.'),
   is_active: z.boolean(),
+  is_featured: z.boolean(),
   image_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  requirements: z.string().optional(),
+  certification: z.string().optional(),
+  job_prospects: z.string().optional(),
 });
 
 export async function createOrUpdateCourse(formData: FormData) {
@@ -27,6 +31,7 @@ export async function createOrUpdateCourse(formData: FormData) {
     ...data,
     price: parseFloat(data.price as string),
     is_active: data.is_active === 'true',
+    is_featured: data.is_featured === 'true',
   });
 
   if (!parsed.success) {

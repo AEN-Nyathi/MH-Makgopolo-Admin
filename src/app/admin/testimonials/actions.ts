@@ -11,6 +11,8 @@ const testimonialSchema = z.object({
   client_role: z.string().min(2, 'Client role is too short'),
   text: z.string().min(10, 'Testimonial text is too short'),
   is_approved: z.boolean(),
+  is_featured: z.boolean(),
+  rating: z.coerce.number().min(1).max(5).optional(),
 });
 
 export async function createOrUpdateTestimonial(formData: FormData) {
@@ -20,6 +22,8 @@ export async function createOrUpdateTestimonial(formData: FormData) {
   const parsed = testimonialSchema.safeParse({
     ...data,
     is_approved: data.is_approved === 'true',
+    is_featured: data.is_featured === 'true',
+    rating: data.rating ? parseInt(data.rating as string, 10) : undefined,
   });
 
   if (!parsed.success) {

@@ -14,12 +14,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Slider } from '@/components/ui/slider';
 
 const formSchema = z.object({
   client_name: z.string().min(2, 'Client name is required'),
   client_role: z.string().min(2, 'Client role is required'),
   text: z.string().min(10, 'Testimonial text is too short'),
   is_approved: z.boolean(),
+  is_featured: z.boolean(),
+  rating: z.number().min(1).max(5).optional(),
 });
 
 type TestimonialFormValues = z.infer<typeof formSchema>;
@@ -34,15 +37,19 @@ export function TestimonialForm({ initialData }: TestimonialFormProps) {
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData ? { ...initialData } : {
+    defaultValues: initialData ? { ...initialData, rating: initialData.rating || 5 } : {
       client_name: '',
       client_role: '',
       text: '',
       is_approved: false,
+      is_featured: false,
+      rating: 5,
     },
   });
 
-  const { formState } = form;
+  const { formState, watch } = form;
+  const rating = watch('rating');
+
 
   const onSubmit = async (data: TestimonialFormValues) => {
     const formData = new FormData();
@@ -82,9 +89,31 @@ export function TestimonialForm({ initialData }: TestimonialFormProps) {
                 <FormField control={form.control} name="text" render={({ field }) => (
                     <FormItem><FormLabel>Testimonial Text</FormLabel><FormControl><Textarea rows={6} placeholder="Full testimonial content." {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
+                <FormField control={form.control} name="rating" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rating: {rating}</FormLabel>
+                      <FormControl>
+                        <Slider
+                          defaultValue={[field.value || 5]}
+                          max={5}
+                          min={1}
+                          step={1}
+                          onValueChange={(value) => field.onChange(value[0])}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField control={form.control} name="is_approved" render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5"><FormLabel>Approved</FormLabel><FormDescription>Is this testimonial approved for public display?</FormDescription></div>
+                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                    </FormItem>
+                )} />
+                <FormField control={form.control} name="is_featured" render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5"><FormLabel>Featured</FormLabel><FormDescription>Should this testimonial appear on the homepage?</FormDescription></div>
                     <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                     </FormItem>
                 )} />

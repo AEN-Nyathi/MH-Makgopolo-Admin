@@ -32,7 +32,11 @@ const formSchema = z.object({
   duration: z.string().min(1, 'Duration is required.'),
   price: z.coerce.number().min(0, 'Price must be a positive number.'),
   is_active: z.boolean(),
+  is_featured: z.boolean(),
   image_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  requirements: z.string().optional(),
+  certification: z.string().optional(),
+  job_prospects: z.string().optional(),
 });
 
 type CourseFormValues = z.infer<typeof formSchema>;
@@ -59,7 +63,11 @@ export function CourseForm({ initialData }: CourseFormProps) {
       duration: '',
       price: 0,
       is_active: true,
+      is_featured: false,
       image_url: '',
+      requirements: '',
+      certification: '',
+      job_prospects: '',
     },
   });
   
@@ -157,6 +165,45 @@ export function CourseForm({ initialData }: CourseFormProps) {
                     </FormItem>
                   )}
                 />
+                 <FormField
+                  control={form.control}
+                  name="requirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="List requirements, comma-separated." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="certification"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Certification Details</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., PSIRA Grade E Certificate" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="job_prospects"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Job Prospects</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Access Control Officer, Patrolling Guard" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
           </div>
@@ -175,6 +222,26 @@ export function CourseForm({ initialData }: CourseFormProps) {
                         <FormLabel>Active Status</FormLabel>
                         <FormDescription>
                           Is this course available for registration?
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="is_featured"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel>Featured</FormLabel>
+                        <FormDescription>
+                          Show this course on the homepage?
                         </FormDescription>
                       </div>
                       <FormControl>
