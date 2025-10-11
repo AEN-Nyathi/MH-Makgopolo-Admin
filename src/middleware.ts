@@ -29,13 +29,13 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // if (!session && pathname.startsWith('/admin') && pathname !== '/admin/login') {
-  //   return NextResponse.redirect(new URL('/admin/login', request.url));
-  // }
+  if (!session && pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    return NextResponse.redirect(new URL('/admin/login', request.url));
+  }
 
-  // if (session && pathname === '/admin/login') {
-  //   return NextResponse.redirect(new URL('/admin', request.url));
-  // }
+  if (session && pathname === '/admin/login') {
+    return NextResponse.redirect(new URL('/admin', request.url));
+  }
   
   return response;
 }
