@@ -21,6 +21,7 @@ const courseSchema = z.object({
   requirements: z.string().optional(),
   certification: z.string().optional(),
   job_prospects: z.string().optional(),
+  order_index: z.coerce.number().optional(),
 });
 
 export async function createOrUpdateCourse(formData: FormData) {

@@ -37,6 +37,7 @@ const formSchema = z.object({
   requirements: z.string().optional(),
   certification: z.string().optional(),
   job_prospects: z.string().optional(),
+  order_index: z.coerce.number().optional(),
 });
 
 type CourseFormValues = z.infer<typeof formSchema>;
@@ -68,6 +69,7 @@ export function CourseForm({ initialData }: CourseFormProps) {
       requirements: '',
       certification: '',
       job_prospects: '',
+      order_index: 0,
     },
   });
   
@@ -301,6 +303,20 @@ export function CourseForm({ initialData }: CourseFormProps) {
                       <FormControl>
                         <Input placeholder="https://example.com/image.jpg" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="order_index"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Order Index</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="0" {...field} />
+                      </FormControl>
+                      <FormDescription>Controls the display order (lower numbers first).</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

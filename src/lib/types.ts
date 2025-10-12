@@ -14,6 +14,7 @@ export type Course = {
   requirements?: string;
   certification?: string;
   job_prospects?: string;
+  order_index?: number;
 };
 
 export type BlogPost = {
