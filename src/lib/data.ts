@@ -52,8 +52,8 @@ const getDocumentById = async <T>(
 // --- Firestore data access ---
 
 // Courses
-export const getCourses = (db: Firestore) => getCollection<Course>(db, 'courses');
-export const getCourseById = (db: Firestore, id: string) => getDocumentById<Course>(db, 'courses', id);
+export const getCourses = (db: Firestore): Promise<Course[]> => getCollection<Course>(db, 'courses');
+export const getCourseById = (db: Firestore, id: string): Promise<Course | null> => getDocumentById<Course>(db, 'courses', id);
 
 export const saveCourse = async (db: Firestore, course: Partial<Omit<Course, 'created_at'>>) => {
   const { id, ...updateData } = course;
@@ -70,8 +70,8 @@ export const saveCourse = async (db: Firestore, course: Partial<Omit<Course, 'cr
 export const deleteCourse = (db: Firestore, id: string) => deleteDoc(doc(db, 'courses', id));
 
 // Blog Posts
-export const getBlogPosts = (db: Firestore) => getCollection<BlogPost>(db, 'blog_posts');
-export const getBlogPostById = (db: Firestore, id: string) => getDocumentById<BlogPost>(db, 'blog_posts', id);
+export const getBlogPosts = (db: Firestore): Promise<BlogPost[]> => getCollection<BlogPost>(db, 'blog_posts');
+export const getBlogPostById = (db: Firestore, id: string): Promise<BlogPost | null> => getDocumentById<BlogPost>(db, 'blog_posts', id);
 
 export const saveBlogPost = async (db: Firestore, post: Partial<Omit<BlogPost, 'created_at'>>) => {
   const { id, ...updateData } = post;
@@ -88,7 +88,7 @@ export const saveBlogPost = async (db: Firestore, post: Partial<Omit<BlogPost, '
 export const deleteBlogPost = (db: Firestore, id: string) => deleteDoc(doc(db, 'blog_posts', id));
 
 // Testimonials
-export const getTestimonials = (db: Firestore) => getCollection<Testimonial>(db, 'testimonials');
+export const getTestimonials = (db: Firestore): Promise<Testimonial[]> => getCollection<Testimonial>(db, 'testimonials');
 
 export const saveTestimonial = async (db: Firestore, testimonial: Partial<Omit<Testimonial, 'submission_date'>>) => {
     const { id, ...updateData } = testimonial;
@@ -107,22 +107,22 @@ export const updateTestimonialApproval = (db: Firestore, id: string, is_approved
 };
 
 // Registrations
-export const getCourseRegistrations = (db: Firestore) => getCollection<CourseRegistration>(db, 'course_registrations');
+export const getCourseRegistrations = (db: Firestore): Promise<CourseRegistration[]> => getCollection<CourseRegistration>(db, 'course_registrations');
 
 export const updateRegistrationStatus = (db: Firestore, id: string, status: RegistrationStatus) => {
   return updateDoc(doc(db, 'course_registrations', id), { status });
 };
 
 // Contact Submissions
-export const getContactSubmissions = (db: Firestore) => getCollection<ContactSubmission>(db, 'contact_submissions');
+export const getContactSubmissions = (db: Firestore): Promise<ContactSubmission[]> => getCollection<ContactSubmission>(db, 'contact_submissions');
 
 export const updateContactStatus = (db: Firestore, id: string, status: ContactStatus) => {
   return updateDoc(doc(db, 'contact_submissions', id), { status });
 };
 
 // Gallery Images
-export const getGalleryImages = (db: Firestore) => getCollection<GalleryImage>(db, 'gallery_images');
-export const getGalleryImageById = (db: Firestore, id: string) => getDocumentById<GalleryImage>(db, 'gallery_images', id);
+export const getGalleryImages = (db: Firestore): Promise<GalleryImage[]> => getCollection<GalleryImage>(db, 'gallery_images');
+export const getGalleryImageById = (db: Firestore, id: string): Promise<GalleryImage | null> => getDocumentById<GalleryImage>(db, 'gallery_images', id);
 
 export const saveGalleryImage = async (db: Firestore, image: Partial<Omit<GalleryImage, 'created_at'>>) => {
   const { id, ...updateData } = image;

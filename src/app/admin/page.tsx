@@ -206,8 +206,8 @@ export default function DashboardPage() {
               <TableBody>
                 {recentTestimonials.map((test) => (
                   <TableRow key={test.id}>
-                    <TableCell className="font-medium">{test.client_name}</TableCell>
-                    <TableCell>{test.client_role}</TableCell>
+                    <TableCell className="font-medium">{test.student_name}</TableCell>
+                    <TableCell>{test.current_position}</TableCell>
                     <TableCell>{formatDate(test.submission_date)}</TableCell>
                   </TableRow>
                 ))}
