@@ -11,7 +11,7 @@ const courseSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters long.'),
   slug: z.string().optional(),
   short_description: z.string().min(10, 'Short description is too short.'),
-  full_description: z.string().min(20, 'Full description is too short.'),
+  description: z.string().min(20, 'Full description is too short.'),
   grade_level: z.string().min(1, 'Grade level is required.'),
   duration: z.string().min(1, 'Duration is required.'),
   price: z.coerce.number().min(0, 'Price must be a positive number.'),
