@@ -36,9 +36,9 @@ export type Testimonial = {
   current_position: string;
   testimonial_text: string;
   is_approved: boolean;
+  is_featured: boolean;
   submission_date: string;
   rating?: number;
-  is_featured?: boolean;
 };
 
 export type RegistrationStatus = 'New' | 'Contacted' | 'Enrolled';
@@ -48,6 +48,10 @@ export type CourseRegistration = {
   full_name: string;
   phone: string;
   email: string;
+  id_number: string;
+  address: string;
+  emergency_contact_name: string;
+  emergency_contact_phone: string;
   course_interest: string;
   submission_date: string;
   status: RegistrationStatus;
@@ -61,6 +65,7 @@ export type ContactSubmission = {
   email: string;
   phone: string;
   message: string;
+  course_interest?: string;
   submission_date: string;
   status: ContactStatus;
 };
