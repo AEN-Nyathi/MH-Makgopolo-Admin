@@ -175,7 +175,7 @@ export default function DashboardPage() {
                   <TableRow key={reg.id}>
                     <TableCell className="font-medium">{reg.fullName}</TableCell>
                     <TableCell>{reg.course}</TableCell>
-                    <TableCell><StatusBadge status={reg.status} /></TableCell>
+                    <TableCell><StatusBadge status={reg.status || 'Pending'} /></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
