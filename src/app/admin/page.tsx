@@ -19,17 +19,17 @@ import {
 import {
   BookCopy,
   MailCheck,
-  Star,
+  Newspaper,
   UserCheck,
 } from 'lucide-react';
 import { PageHeader } from '@/components/admin/page-header';
-import { getCourses, getCourseRegistrations, getContactSubmissions, getTestimonials } from '@/lib/data';
+import { getCourses, getCourseRegistrations, getContactSubmissions, getBlogPosts } from '@/lib/data';
 import { formatDate } from '@/lib/utils';
 import { StatusBadge } from '@/components/admin/status-badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
-import type { Course, CourseRegistration, ContactSubmission, Testimonial } from '@/lib/types';
+import type { Course, CourseRegistration, ContactSubmission, BlogPost } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardPage() {
@@ -38,23 +38,23 @@ export default function DashboardPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [registrations, setRegistrations] = useState<CourseRegistration[]>([]);
   const [contacts, setContacts] = useState<ContactSubmission[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   
   useEffect(() => {
     if (!db) return;
     
     const fetchData = async () => {
       setLoading(true);
-      const [coursesData, registrationsData, contactsData, testimonialsData] = await Promise.all([
+      const [coursesData, registrationsData, contactsData, blogPostsData] = await Promise.all([
         getCourses(db),
         getCourseRegistrations(db),
         getContactSubmissions(db),
-        getTestimonials(db)
+        getBlogPosts(db)
       ]);
       setCourses(coursesData);
       setRegistrations(registrationsData);
       setContacts(contactsData);
-      setTestimonials(testimonialsData);
+      setBlogPosts(blogPostsData);
       setLoading(false);
     };
 
@@ -65,10 +65,10 @@ export default function DashboardPage() {
   const totalRegistrations = registrations.length;
   const totalContacts = contacts.length;
   const activeCourses = courses.filter(c => c.is_active).length;
-  const pendingTestimonials = testimonials.filter(t => !t.is_approved).length;
+  const totalBlogPosts = blogPosts.length;
 
   const recentRegistrations = registrations.slice(0, 5);
-  const recentTestimonials = testimonials.filter(t => !t.is_approved).slice(0, 5);
+  const recentContacts = contacts.slice(0, 5);
 
   if (loading) {
     return (
@@ -89,7 +89,7 @@ export default function DashboardPage() {
                 <CardContent><Skeleton className="h-32 w-full" /></CardContent>
             </Card>
             <Card>
-                <CardHeader><CardTitle>Testimonials Awaiting Review</CardTitle></CardHeader>
+                <CardHeader><CardTitle>Recent Contact Leads</CardTitle></CardHeader>
                 <CardContent><Skeleton className="h-32 w-full" /></CardContent>
             </Card>
         </div>
@@ -143,13 +143,13 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Testimonials for Review
+              Total Blog Posts
             </CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
+            <Newspaper className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pendingTestimonials}</div>
-            <p className="text-xs text-muted-foreground">Awaiting approval</p>
+            <div className="text-2xl font-bold">{totalBlogPosts}</div>
+            <p className="text-xs text-muted-foreground">Published articles</p>
           </CardContent>
         </Card>
       </div>
@@ -189,9 +189,9 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Testimonials Awaiting Review</CardTitle>
+            <CardTitle>Recent Contact Leads</CardTitle>
             <CardDescription>
-              The latest 5 testimonials that need your approval.
+              The latest 5 inquiries from the website.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -199,23 +199,23 @@ export default function DashboardPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Client</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Submitted</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recentTestimonials.map((test) => (
-                  <TableRow key={test.id}>
-                    <TableCell className="font-medium">{test.student_name}</TableCell>
-                    <TableCell>{test.current_position}</TableCell>
-                    <TableCell>{formatDate(test.submission_date)}</TableCell>
+                {recentContacts.map((contact) => (
+                  <TableRow key={contact.id}>
+                    <TableCell className="font-medium">{contact.full_name}</TableCell>
+                    <TableCell>{contact.email}</TableCell>
+                    <TableCell><StatusBadge status={contact.status} /></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
             <div className="mt-4 flex justify-end">
                 <Button asChild variant="link">
-                    <Link href="/admin/testimonials">View All</Link>
+                    <Link href="/admin/contact-leads">View All</Link>
                 </Button>
             </div>
           </CardContent>
