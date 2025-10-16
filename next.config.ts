@@ -12,19 +12,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'placehold.co',
+        hostname: 'lh3.googleusercontent.com',
         port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
+        hostname: '**.fbcdn.net',
         port: '',
         pathname: '/**',
       },
