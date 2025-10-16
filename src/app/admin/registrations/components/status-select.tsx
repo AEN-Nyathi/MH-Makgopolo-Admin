@@ -36,7 +36,7 @@ export function StatusSelect({ registrationId, initialStatus }: StatusSelectProp
   return (
     <Select onValueChange={handleStatusChange} defaultValue={status}>
       <SelectTrigger className="w-[130px] h-8">
-        <SelectValue asChild>
+        <SelectValue>
           <StatusBadge status={status} />
         </SelectValue>
       </SelectTrigger>
