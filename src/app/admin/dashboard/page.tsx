@@ -52,7 +52,14 @@ export default function DashboardPage() {
         getBlogPosts(db)
       ]);
       setCourses(coursesData);
-      setRegistrations(registrationsData);
+      
+      const sortedRegistrations = [...registrationsData].sort((a, b) => {
+        if (a.status === 'Pending' && b.status !== 'Pending') return -1;
+        if (a.status !== 'Pending' && b.status === 'Pending') return 1;
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+
+      setRegistrations(sortedRegistrations);
       setContacts(contactsData);
       setBlogPosts(blogPostsData);
       setLoading(false);
