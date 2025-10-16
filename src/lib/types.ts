@@ -46,14 +46,14 @@ export type RegistrationStatus = 'New' | 'Contacted' | 'Enrolled';
 
 export type CourseRegistration = {
   id: string;
-  full_name: string;
+  fullName: string;
   phone: string;
   email: string;
-  id_number: string;
+  idNumber: string;
   address: string;
   emergency_contact_name: string;
   emergency_contact_phone: string;
-  course_interest: string;
+  course: string;
   submission_date: string;
   status: RegistrationStatus;
 };

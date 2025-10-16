@@ -173,8 +173,8 @@ export default function DashboardPage() {
               <TableBody>
                 {recentRegistrations.map((reg) => (
                   <TableRow key={reg.id}>
-                    <TableCell className="font-medium">{reg.full_name}</TableCell>
-                    <TableCell>{reg.course_interest}</TableCell>
+                    <TableCell className="font-medium">{reg.fullName}</TableCell>
+                    <TableCell>{reg.course}</TableCell>
                     <TableCell><StatusBadge status={reg.status} /></TableCell>
                   </TableRow>
                 ))}

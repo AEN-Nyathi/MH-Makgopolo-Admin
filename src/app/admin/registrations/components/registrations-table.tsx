@@ -36,11 +36,11 @@ export function RegistrationsTable({ registrations }: RegistrationsTableProps) {
           {registrations.length > 0 ? (
             registrations.map((reg) => (
               <TableRow key={reg.id}>
-                <TableCell className="font-medium">{reg.full_name}</TableCell>
+                <TableCell className="font-medium">{reg.fullName}</TableCell>
                 <TableCell>{reg.email}</TableCell>
                 <TableCell>{reg.phone}</TableCell>
-                <TableCell>{reg.id_number}</TableCell>
-                <TableCell>{reg.course_interest}</TableCell>
+                <TableCell>{reg.idNumber}</TableCell>
+                <TableCell>{reg.course}</TableCell>
                 <TableCell>{formatDate(reg.submission_date)}</TableCell>
                 <TableCell>
                   <StatusSelect registrationId={reg.id} initialStatus={reg.status} />
