@@ -21,15 +21,18 @@ export async function createCourseRegistration(data: any) {
   const { db } = await initializeFirebase();
   try {
     // Ensure all fields from the form are included
-    await addDoc(collection(db, 'course_registrations'), {
-      full_name: data.fullName,
+    await addDoc(collection(db, 'registrations'), {
+      fullName: data.fullName,
       email: data.email,
       phone: data.phone,
-      id_number: data.idNumber,
-      course_interest: data.course,
+      idNumber: data.idNumber,
+      course: data.course,
       submission_date: new Date().toISOString(),
-      status: 'New',
-      // Add other fields from your form if they exist, e.g., address
+      status: 'New', // Explicitly set default status
+      // address and emergency contacts are not in the new form
+      address: '',
+      emergency_contact_name: '',
+      emergency_contact_phone: '',
     });
     return { success: true };
   } catch (error: any) {

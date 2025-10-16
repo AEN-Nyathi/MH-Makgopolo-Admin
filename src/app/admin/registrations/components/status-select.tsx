@@ -19,7 +19,7 @@ interface StatusSelectProps {
 }
 
 export function StatusSelect({ registrationId, initialStatus }: StatusSelectProps) {
-  const [status, setStatus] = useState<RegistrationStatus>(initialStatus);
+  const [status, setStatus] = useState<RegistrationStatus>(initialStatus || 'Pending');
   const { toast } = useToast();
 
   const handleStatusChange = async (newStatus: RegistrationStatus) => {
@@ -44,6 +44,7 @@ export function StatusSelect({ registrationId, initialStatus }: StatusSelectProp
         <SelectItem value="New">New</SelectItem>
         <SelectItem value="Contacted">Contacted</SelectItem>
         <SelectItem value="Enrolled">Enrolled</SelectItem>
+        <SelectItem value="Pending">Pending</SelectItem>
       </SelectContent>
     </Select>
   );
