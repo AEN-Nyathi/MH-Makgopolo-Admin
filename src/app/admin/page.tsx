@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -54,8 +55,10 @@ export default function DashboardPage() {
       setCourses(coursesData);
       
       const sortedRegistrations = [...registrationsData].sort((a, b) => {
-        if (a.status === 'Pending' && b.status !== 'Pending') return -1;
-        if (a.status !== 'Pending' && b.status === 'Pending') return 1;
+        const aIsPending = !a.status;
+        const bIsPending = !b.status;
+        if (aIsPending && !bIsPending) return -1;
+        if (!aIsPending && bIsPending) return 1;
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
 
