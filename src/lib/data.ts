@@ -110,7 +110,7 @@ export const updateTestimonialApproval = (db: Firestore, id: string, is_approved
 export const getCourseRegistrations = (db: Firestore): Promise<CourseRegistration[]> => getCollection<CourseRegistration>(db, 'registrations');
 
 export const updateRegistrationStatus = (db: Firestore, id: string, status: RegistrationStatus) => {
-  return updateDoc(doc(db, 'course_registrations', id), { status });
+  return updateDoc(doc(db, 'registrations', id), { status });
 };
 
 // Contact Submissions
