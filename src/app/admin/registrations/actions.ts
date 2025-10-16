@@ -20,10 +20,16 @@ export async function updateRegistrationStatus(id: string, status: RegistrationS
 export async function createCourseRegistration(data: any) {
   const { db } = await initializeFirebase();
   try {
+    // Ensure all fields from the form are included
     await addDoc(collection(db, 'course_registrations'), {
-      ...data,
+      full_name: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      id_number: data.idNumber,
+      course_interest: data.course,
       submission_date: new Date().toISOString(),
       status: 'New',
+      // Add other fields from your form if they exist, e.g., address
     });
     return { success: true };
   } catch (error: any) {

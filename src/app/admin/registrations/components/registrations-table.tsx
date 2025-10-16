@@ -26,6 +26,7 @@ export function RegistrationsTable({ registrations }: RegistrationsTableProps) {
             <TableHead>Full Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Phone</TableHead>
+            <TableHead>ID Number</TableHead>
             <TableHead>Course Interest</TableHead>
             <TableHead>Submitted On</TableHead>
             <TableHead>Status</TableHead>
@@ -38,6 +39,7 @@ export function RegistrationsTable({ registrations }: RegistrationsTableProps) {
                 <TableCell className="font-medium">{reg.full_name}</TableCell>
                 <TableCell>{reg.email}</TableCell>
                 <TableCell>{reg.phone}</TableCell>
+                <TableCell>{reg.id_number}</TableCell>
                 <TableCell>{reg.course_interest}</TableCell>
                 <TableCell>{formatDate(reg.submission_date)}</TableCell>
                 <TableCell>
@@ -47,7 +49,7 @@ export function RegistrationsTable({ registrations }: RegistrationsTableProps) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={6} className="h-24 text-center">
+              <TableCell colSpan={7} className="h-24 text-center">
                 No course registrations found.
               </TableCell>
             </TableRow>
