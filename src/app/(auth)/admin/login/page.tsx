@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +19,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck } from 'lucide-react';
 import { login } from '@/app/(auth)/actions';
 
 const formSchema = z.object({
@@ -63,12 +63,12 @@ export default function LoginPage() {
 
   return (
     <Card className="w-full max-w-md">
-      <CardHeader className="text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
-          <ShieldCheck className="h-8 w-8" />
+      <CardHeader className="items-center text-center">
+        <Image src='/logo.png' alt='MH Makgopolo Logo' width={64} height={64} />
+        <div className="flex flex-col pt-2">
+            <CardTitle className="font-headline text-2xl">MH Makgopolo</CardTitle>
+            <CardDescription>Security Training Admin Center</CardDescription>
         </div>
-        <CardTitle className="font-headline text-2xl">MH Admin Center</CardTitle>
-        <CardDescription>Enter your credentials to access the dashboard</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
