@@ -6,8 +6,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(date: Date | string | number) {
-    return format(new Date(date), "PPP");
+export function formatDate(date: any) {
+    if (!date) return '';
+    try {
+        const dateObj = date.toDate ? date.toDate() : new Date(date);
+        if (isNaN(dateObj.getTime())) {
+            return 'Invalid Date';
+        }
+        return format(dateObj, "PPP");
+    } catch (error) {
+        return 'Invalid Date';
+    }
 }
 
 export function exportToCsv<T extends Record<string, any>>(data: T[], filename: string) {
