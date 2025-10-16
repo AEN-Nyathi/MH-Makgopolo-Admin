@@ -107,7 +107,7 @@ export const updateTestimonialApproval = (db: Firestore, id: string, is_approved
 };
 
 // Registrations
-export const getCourseRegistrations = (db: Firestore): Promise<CourseRegistration[]> => getCollection<CourseRegistration>(db, 'course_registrations');
+export const getCourseRegistrations = (db: Firestore): Promise<CourseRegistration[]> => getCollection<CourseRegistration>(db, 'registrations');
 
 export const updateRegistrationStatus = (db: Firestore, id: string, status: RegistrationStatus) => {
   return updateDoc(doc(db, 'course_registrations', id), { status });

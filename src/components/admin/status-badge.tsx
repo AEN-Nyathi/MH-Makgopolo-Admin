@@ -6,6 +6,9 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
+  if (!status) {
+    return null;
+  }
   const statusLower = status.toLowerCase();
 
   const variant =
