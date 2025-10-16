@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Image from 'next/image';
+import logo from '@/assets/images/logo.png'
 
 import { Button } from '@/components/ui/button';
 import {
@@ -64,7 +65,7 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="items-center text-center">
-        <Image src="/logo.png" alt="MH Makgopolo Logo" width={64} height={64} priority />
+        <Image src={logo} alt="MH Makgopolo Logo" width={64} height={64} priority />
         <div className="flex flex-col pt-2">
             <CardTitle className="font-headline text-2xl">MH Makgopolo</CardTitle>
             <CardDescription>Security Training Admin Center</CardDescription>
