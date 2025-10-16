@@ -21,12 +21,12 @@ export default function AdminLayout({
       <Sidebar side="left" variant="sidebar" collapsible="icon">
         <SidebarHeader className="h-16 justify-center p-4">
             <Link href="/admin" className="flex items-center gap-3">
-                <Image src='/logo.png' alt='MH Makgopolo Logo' width={40} height={40} className="group-data-[collapsible=icon]:hidden" />
+                <Image src="/logo.png" alt="MH Makgopolo Logo" width={40} height={40} className="block group-data-[collapsible=icon]:hidden" />
                 <div className="flex flex-col group-data-[collapsible=icon]:hidden">
                     <span className="font-headline font-bold text-xl text-sidebar-foreground">MH Makgopolo</span>
                     <span className="text-xs text-sidebar-foreground/80">Admin Center</span>
                 </div>
-                <Image src='/logo.png' alt='MH Makgopolo Logo' width={32} height={32} className="hidden group-data-[collapsible=icon]:block" />
+                <Image src="/logo.png" alt="MH Makgopolo Logo" width={32} height={32} className="hidden group-data-[collapsible=icon]:block" />
             </Link>
         </SidebarHeader>
         <SidebarContent>
