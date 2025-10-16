@@ -41,7 +41,7 @@ export function RegistrationsTable({ registrations }: RegistrationsTableProps) {
                 <TableCell>{reg.phone}</TableCell>
                 <TableCell>{reg.idNumber}</TableCell>
                 <TableCell>{reg.course}</TableCell>
-                <TableCell>{formatDate(reg.submission_date)}</TableCell>
+                <TableCell>{formatDate(reg.createdAt)}</TableCell>
                 <TableCell>
                   <StatusSelect registrationId={reg.id} initialStatus={reg.status} />
                 </TableCell>

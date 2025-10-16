@@ -42,7 +42,7 @@ export type Testimonial = {
   rating?: number;
 };
 
-export type RegistrationStatus = 'New' | 'Contacted' | 'Enrolled';
+export type RegistrationStatus = 'New' | 'Contacted' | 'Enrolled' | 'Pending';
 
 export type CourseRegistration = {
   id: string;
@@ -50,11 +50,8 @@ export type CourseRegistration = {
   phone: string;
   email: string;
   idNumber: string;
-  address: string;
-  emergency_contact_name: string;
-  emergency_contact_phone: string;
   course: string;
-  submission_date: string;
+  createdAt: string;
   status: RegistrationStatus;
 };
 
