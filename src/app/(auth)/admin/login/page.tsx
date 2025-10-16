@@ -64,7 +64,7 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="items-center text-center">
-        <Image src='/logo.png' alt='MH Makgopolo Logo' width={64} height={64} />
+        <Image src="/logo.png" alt="MH Makgopolo Logo" width={64} height={64} />
         <div className="flex flex-col pt-2">
             <CardTitle className="font-headline text-2xl">MH Makgopolo</CardTitle>
             <CardDescription>Security Training Admin Center</CardDescription>
