@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { saveCourse, deleteCourse as dbDeleteCourse } from '@/lib/data';
-import { generateSlug } from '@/ai/flows/automatic-slug-generation';
 import { initializeFirebase } from '@/firebase';
 
 const courseSchema = z.object({
@@ -41,13 +40,7 @@ export async function createOrUpdateCourse(formData: FormData) {
 
   let slug = parsed.data.slug;
   if (!slug && parsed.data.title) {
-    try {
-      const result = await generateSlug({ title: parsed.data.title });
-      slug = result.slug;
-    } catch (error) {
-      console.error('[Courses Action] AI slug generation failed:', error);
-      slug = parsed.data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-    }
+    slug = parsed.data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
   }
 
   try {
