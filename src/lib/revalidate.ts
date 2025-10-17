@@ -1,5 +1,5 @@
 export async function revalidateClientPath(path: string) {
-  const clientUrl = process.env.NEXT_PUBLIC_CLIENT_URL;
+  const clientUrl = process.env.REVALIDATION_HOST;
   const secretToken = process.env.REVALIDATION_SECRET_TOKEN;
 
   if (!clientUrl || !secretToken) {
