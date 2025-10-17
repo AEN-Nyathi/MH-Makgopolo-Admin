@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { initializeFirebase } from '@/firebase';
 import { saveBlogPost, deleteBlogPost as dbDeleteBlogPost, getBlogPostById } from '@/lib/data';
+import { revalidateClientPath } from '@/lib/revalidate';
 
 const blogPostSchema = z.object({
   id: z.string().optional(),
@@ -40,7 +41,11 @@ export async function createOrUpdateBlogPost(formData: FormData) {
     const postData = { ...parsed.data, slug: slug!, image_url: parsed.data.image_url || 'https://picsum.photos/seed/placeholder/800/600' };
     await saveBlogPost(db, postData);
     revalidatePath('/admin/blog');
-    revalidatePath(`/blog/${slug}`);
+    if (slug) {
+        revalidatePath(`/blog/${slug}`);
+        await revalidateClientPath(`/blog/${slug}`);
+    }
+    await revalidateClientPath('/blog');
     return { success: true };
   } catch (e) {
     return { success: false, errors: { _server: ['Failed to save blog post.'] } };
@@ -50,8 +55,13 @@ export async function createOrUpdateBlogPost(formData: FormData) {
 export async function deleteBlogPost(id: string) {
     const { db } = await initializeFirebase();
   try {
+    const post = await getBlogPostById(db, id);
     await dbDeleteBlogPost(db, id);
     revalidatePath('/admin/blog');
+    await revalidateClientPath('/blog');
+    if (post && post.slug) {
+      await revalidateClientPath(`/blog/${post.slug}`);
+    }
     return { success: true };
   } catch (e) {
     return { success: false, message: 'Failed to delete blog post.' };
@@ -70,7 +80,9 @@ export async function toggleBlogPostStatus(id: string, currentStatus: boolean) {
         revalidatePath(`/admin/blog/${id}/edit`);
         if (post.slug) {
           revalidatePath(`/blog/${post.slug}`);
+          await revalidateClientPath(`/blog/${post.slug}`);
         }
+        await revalidateClientPath('/blog');
         return { success: true, newStatus: !currentStatus };
     } catch (e) {
         return { success: false, message: 'Failed to update blog post status.' };

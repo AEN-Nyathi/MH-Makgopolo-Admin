@@ -2,8 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { saveCourse, deleteCourse as dbDeleteCourse } from '@/lib/data';
+import { saveCourse, deleteCourse as dbDeleteCourse, getCourseById } from '@/lib/data';
 import { initializeFirebase } from '@/firebase';
+import { revalidateClientPath } from '@/lib/revalidate';
 
 const courseSchema = z.object({
   id: z.string().optional(),
@@ -48,6 +49,11 @@ export async function createOrUpdateCourse(formData: FormData) {
     
     await saveCourse(db, courseData);
     revalidatePath('/admin/courses');
+    await revalidateClientPath('/courses');
+    if (slug) {
+        await revalidateClientPath(`/courses/${slug}`);
+    }
+    await revalidateClientPath('/');
     return { success: true };
   } catch (e: any) {
     console.error('[Courses Action] Failed to save course:', e);
@@ -58,8 +64,14 @@ export async function createOrUpdateCourse(formData: FormData) {
 export async function deleteCourse(id: string) {
   const { db } = await initializeFirebase();
   try {
+    const course = await getCourseById(db, id);
     await dbDeleteCourse(db, id);
     revalidatePath('/admin/courses');
+    await revalidateClientPath('/courses');
+    if (course && course.slug) {
+        await revalidateClientPath(`/courses/${course.slug}`);
+    }
+    await revalidateClientPath('/');
     return { success: true };
   } catch (e:any) {
     return { success: false, message: e.message || 'Failed to delete course.' };

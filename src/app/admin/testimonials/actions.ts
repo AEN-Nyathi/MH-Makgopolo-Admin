@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { updateTestimonialApproval as dbUpdateTestimonialApproval, saveTestimonial } from '@/lib/data';
 import { initializeFirebase } from '@/firebase';
+import { revalidateClientPath } from '@/lib/revalidate';
 
 const testimonialSchema = z.object({
   id: z.string().optional(),
@@ -33,6 +34,8 @@ export async function createOrUpdateTestimonial(formData: FormData) {
   try {
     await saveTestimonial(db, parsed.data);
     revalidatePath('/admin/testimonials');
+    await revalidateClientPath('/testimonials');
+    await revalidateClientPath('/');
     return { success: true };
   } catch (e: any) {
     return { success: false, errors: { _server: [e.message || 'Failed to save testimonial.'] } };
@@ -45,6 +48,8 @@ export async function toggleTestimonialApproval(id: string, currentStatus: boole
   try {
     await dbUpdateTestimonialApproval(db, id, !currentStatus);
     revalidatePath('/admin/testimonials');
+    await revalidateClientPath('/testimonials');
+    await revalidateClientPath('/');
     return { success: true, newStatus: !currentStatus };
   } catch (e) {
     return { success: false, message: 'Failed to update testimonial status.' };

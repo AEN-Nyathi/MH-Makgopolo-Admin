@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { initializeFirebase } from '@/firebase';
 import { saveGalleryImage, deleteGalleryImage as dbDeleteGalleryImage } from '@/lib/data';
+import { revalidateClientPath } from '@/lib/revalidate';
 
 const galleryImageSchema = z.object({
   id: z.string().optional(),
@@ -30,6 +31,7 @@ export async function createOrUpdateGalleryImage(formData: FormData) {
   try {
     await saveGalleryImage(db, parsed.data);
     revalidatePath('/admin/gallery');
+    await revalidateClientPath('/gallery');
     return { success: true };
   } catch (e) {
     return { success: false, errors: { _server: ['Failed to save gallery image.'] } };
@@ -41,6 +43,7 @@ export async function deleteGalleryImage(id: string) {
   try {
     await dbDeleteGalleryImage(db, id);
     revalidatePath('/admin/gallery');
+    await revalidateClientPath('/gallery');
     return { success: true };
   } catch (e) {
     return { success: false, message: 'Failed to delete gallery image.' };

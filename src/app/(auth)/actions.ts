@@ -11,7 +11,7 @@ export async function login(data: any) {
     const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
     const idToken = await userCredential.user.getIdToken();
 
-    cookies().set('session', idToken, {
+    (await cookies()).set('session', idToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24, // 1 day
@@ -26,5 +26,5 @@ export async function login(data: any) {
 }
 
 export async function logout() {
-  cookies().delete('session');
+  (await cookies()).delete('session');
 }
