@@ -11,6 +11,7 @@ import {
   MailCheck,
   ShieldCheck,
   GalleryHorizontal,
+  QrCode,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ const navItems = [
   { href: '/admin/gallery', label: 'Gallery', icon: GalleryHorizontal },
   { href: '/admin/registrations', label: 'Registrations', icon: UserCheck },
   { href: '/admin/contact-leads', label: 'Contact Leads', icon: MailCheck },
+  { href: '/admin/QRCodeGenerator', label: 'QR Codes', icon: QrCode },
 ];
 
 export function MainNav({ className }: React.HTMLAttributes<HTMLElement>) {
